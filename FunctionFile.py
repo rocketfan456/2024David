@@ -29,7 +29,7 @@ def ApogeeRaise(ap0):
     dV = 1000 * dV
 
     # Round change in velocity to 3 decimal places
-    dV = round(dV, 3)
+    # dV = round(dV, 3)
 
     return dV
 
