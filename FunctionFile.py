@@ -13,12 +13,15 @@ def ApogeeRaise(ap0):
     r = eRadius + 185
 
     # semi-major axis (km)
+    # a0: initial; af: final
     a0 = (r + ap0 + eRadius) / 2
     af = (r + 410000 + eRadius) / 2
 
+    # velocities at periapsis (km/s)
     v0 = np.sqrt(mu * (2/r - 1/a0))
     vf = np.sqrt(mu * (2/r - 1/af))
 
+    # Change in velocity at periapsis needed to reach moon (km/s)
     dV = vf - v0
     return dV
 
