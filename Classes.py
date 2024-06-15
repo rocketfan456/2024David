@@ -15,6 +15,7 @@ def PrintData(phaseList):
 class Phase:
 
     def __init__(self,strName, mStart, dvPhase, clsEng):
+
         # Check if this is a T/W phase. If so, 
         # update the dV calculate the thrust-to-weight
         twPhase = clsEng.thrust/(mStart*9.81)
