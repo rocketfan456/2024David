@@ -8,7 +8,7 @@ def PrintData(phaseList):
     print('{0:20s}{1:>11s}{2:>11s}{3:>11s}'.format("Phase Name", "DV (m/s)", "Mass0 (kg)", "MassF (kg)" ))
     print('{0:25s}'.format("------------------------------------------------------------------------" ))
     for curPhase in phaseList:
-        print('{0:20s}{1:11.1f}{2:11.1f}{3:11.1f}'.format(curPhase.strName ))
+        print('{0:20s}{1:11.1f}{2:11.1f}{3:11.1f}'.format(curPhase.strName, curPhase.dvPhase, curPhase.mStart, curPhase.mEnd))
 
 # This class will create a generic "phase" which will do propellant 
 # calculations
@@ -20,12 +20,12 @@ class Phase:
         # update the dV calculate the thrust-to-weight
         twPhase = clsEng.thrust/(mStart*9.81)
         if dvPhase<0:
-            dvPhase = 4335*np.exp(-twPhase * 20.25) + 1880#use the thrust-to-weight equation from the slides
+            dvPhase = 4335*np.exp(-twPhase * 20.25) + 1880 #use the thrust-to-weight equation from the slides
 
 
         # Calculate Impulse Propellant Using Rocket Equation   
         # We specify Impulse because we'll have other types later
-        mPropImpulse = mStart * np.exp(dvPhase / -(clsEng.isp * 9.81))
+        mPropImpulse = mStart / (np.exp(dvPhase / (clsEng.isp * 9.81)))
    
         # Determine Oxidizer and Fuel
         mPropImpulseOx = mPropImpulse * clsEng.mr / (1 + clsEng.mr)
