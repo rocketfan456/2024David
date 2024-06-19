@@ -87,7 +87,7 @@ class TankSet:
     def __init__(self, strPropType,strMatType, nTanks, lMaxRadTank, presTank, mPropTotal):
         # General Parameters for Tanks
         pctUllage = 0.1         # Extra ullage room as a percentage of tank volume
-        aMax      =           # Maximum acceleration (m/s2)
+        aMax      =  50         # Maximum acceleration (m/s2)
         pctFudge  =  1.2       # Fudge factor for welds, etc
         fosMat    =  1.5        # factor of safety for material (nd)
         
