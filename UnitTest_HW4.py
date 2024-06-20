@@ -7,7 +7,7 @@ Created on Sun Dec 13 19:26:02 2020
 
 import unittest
 import FunctionFile as ff # need this for teh apogee function
-import Classes_HW4 as cf   # edit this line to point to your Classes file
+import Classes as cf   # edit this line to point to your Classes file
 import numpy as np
 
 class TestApogee(unittest.TestCase):

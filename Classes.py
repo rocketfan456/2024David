@@ -88,7 +88,7 @@ class TankSet:
         # General Parameters for Tanks
         pctUllage = 0.1         # Extra ullage room as a percentage of tank volume
         aMax      =  50         # Maximum acceleration (m/s2)
-        pctFudge  =  1.2       # Fudge factor for welds, etc
+        pctFudge  =  0.2       # Fudge factor for welds, etc
         fosMat    =  1.5        # factor of safety for material (nd)
         
         # Tank material switch case
@@ -168,7 +168,7 @@ class TankSet:
         mCylPerTank   = volMatCylPerTank*rhoMat
         
         # Add in the fudge factor 
-        mTotalPerTank = mDomesPerTank + mCylPerTank
+        mTotalPerTank = (mDomesPerTank + mCylPerTank) * (1 + pctFudge)
         mTotal        = (mTotalPerTank*nTanks)*(1.1**nTanks)
         
        
@@ -176,32 +176,32 @@ class TankSet:
        
         # Stuff everything back into "self" for output
         self.strPropType = strPropType
-        self.strMatType  = 
+        self.strMatType  = strMatType
         self.nTanks      = nTanks
         self.lMaxRadTank = lMaxRadTank
-        self.presTank    = 
+        self.presTank    = presTank
         self.mPropTotal  = mPropTotal
        
         self.pctUllage       = pctUllage
         self.rhoProp         = rhoProp
-        self.volPropTotal    = 
+        self.volPropTotal    = volPropTotal
         self.volPropPerTank  = volPropPerTank
-        self.volPerTank      = 
+        self.volPerTank      = volPerTank
         self.volMaxRadius    = volMaxRadius
-        self.lRadiusTank     = 
+        self.lRadiusTank     = lRadiusTank
         self.lCylTank        = lCylTank
-        self.lTankLength     = 
+        self.lTankLength     = lTankLength
         self.saDomesPerTank     = saDomesPerTank
-        self.saCylinderPerTank  = 
-        self.saTotalPerTank  = 
-        self.presTotal       = 
-        self.thkDomesCalc    = 
-        self.thkCylCalc      = 
-        self.thkDomes        = 
-        self.thkCyl          = 
-        self.volMatDomesPerTank = 
-        self.volMatCylPerTank = 
-        self.mDomesPerTank   = 
-        self.mCylPerTank     = 
-        self.mTotalPerTank   = 
+        self.saCylinderPerTank  = saCylinderPerTank
+        self.saTotalPerTank  = saTotalPerTank
+        self.presTotal       = presTotal
+        self.thkDomesCalc    = thkDomesCalc
+        self.thkCylCalc      = thkCylCalc
+        self.thkDomes        = thkDomes
+        self.thkCyl          = thkCyl
+        self.volMatDomesPerTank = volMatDomesPerTank
+        self.volMatCylPerTank = volMatCylPerTank
+        self.mDomesPerTank   = mDomesPerTank
+        self.mCylPerTank     = mCylPerTank
+        self.mTotalPerTank   = mTotalPerTank
         self.mTotal          = mTotal
