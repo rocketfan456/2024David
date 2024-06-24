@@ -270,7 +270,7 @@ class Subsystems:
         else: 
             pwrdenArray =  75 # w/kg
         
-        lTank = max(clsOxTankSet, clsFuelTankSet) # pick the maximum length of your clsOxTankSet.lTankLength and clsFuelTankSet.lTanklength
+        lTank = max(clsOxTankSet.lTankLength, clsFuelTankSet.lTankLength) # pick the maximum length of your clsOxTankSet.lTankLength and clsFuelTankSet.lTanklength
         mWiring   = 1.058 * (mVehicleStart)**0.5 * (lTank)**0.25
         
         pwrTotalMargined = (1+pctMarginArray)*(pwrDrawLander + pwrDrawPayload) #the parenthesis is the sum of lander power and payload power
@@ -319,7 +319,7 @@ class Subsystems:
         mEngine = 1/(twEngine/clsEng.thrust)/9.81
 
         #?
-        mPropulsion = mEngine + mRCS + mPressurization + mFeedlines
+        mPropulsion = mEngine + mRCS + mPressurization + mFeedlines + mMLIFuel + mSOFIFuel + mMLIOx + mSOFIOx + clsOxTankSet.mTotal + clsFuelTankSet.mTotal
 
         # Thermal
         mThermal = 0.03*mVehicleStart
