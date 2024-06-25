@@ -278,7 +278,7 @@ class TankSet:
         # General Parameters for Tanks
         pctUllage = 0.1         # Extra ullage room as a percentage of tank volume
         aMax      =  50         # Maximum acceleration (m/s2)
-        pctFudge  =  0.2       # Fudge factor for welds, etc
+        pctFudge  =  1.2       # Fudge factor for welds, etc
         fosMat    =  1.5        # factor of safety for material (nd)
         
         # Tank material switch case
@@ -358,7 +358,7 @@ class TankSet:
         mCylPerTank   = volMatCylPerTank*rhoMat
         
         # Add in the fudge factor 
-        mTotalPerTank = (mDomesPerTank + mCylPerTank) * (1 + pctFudge)
+        mTotalPerTank = (mDomesPerTank + mCylPerTank) * (pctFudge)
         mTotal        = (mTotalPerTank*nTanks)*(1.1**nTanks)
         
        
@@ -476,7 +476,7 @@ class Subsystems:
         mEngine = 1/(twEngine/clsEng.thrust)/9.81
 
         #?
-        mPropulsion = mEngine + mRCS + mPressurization + mFeedlines + mMLIFuel + mSOFIFuel + mMLIOx + mSOFIOx \
+        mPropulsion = mRCS + mPressurization + mFeedlines + mSOFIOx + mMLIOx + mSOFIFuel + mMLIFuel + mEngine \
             + clsOxTankSet.mTotal + clsFuelTankSet.mTotal + clsMonoTankSet.mTotal
 
         # Thermal
