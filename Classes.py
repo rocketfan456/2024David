@@ -66,30 +66,30 @@ class Phase:
         if dvPhase>0:
             dtPhase = mPropImpulse/clsEng.mdot
     
-                # Move the Impulse propellant into the correct category
+        # Move the Impulse propellant into the correct category
         if clsEng.strPropType == "Biprop":
-            mPropImpulseOx = mPropImpulse*clsEng.mr/(1+clsEng.mr)
-            mPropImpulseFuel = mPropImpulse/(1+clsEng.mr)
+            mPropImpulseOx = mPropImpulse*clsEng.mr/(1+clsEng.mr) # Use mixture ratio to calculate the ox impulse used
+            mPropImpulseFuel = mPropImpulse/(1+clsEng.mr) # Use mixture ratio to calculate the fuel impulse used
             
-            mPropImpulseReserveOx = mPropImpulseReserve*clsEng.mr/(1+clsEng.mr)
-            mPropImpulseReserveFuel = mPropImpulseReserve/(1+clsEng.mr)
+            mPropImpulseReserveOx = mPropImpulseReserve*clsEng.mr/(1+clsEng.mr) # Use the mixture ratio to calculate the ox reserve
+            mPropImpulseReserveFuel = mPropImpulseReserve/(1+clsEng.mr) # Use the mixture ratio to calculate the fuel reserve
             
-            mPropImpulseMono = 0
-            mPropImpulseReserveMono = 0
+            mPropImpulseMono = 0 # this is a biprop engine, so no monoprop use
+            mPropImpulseReserveMono = 0 # this is a biprop engine, so no monoprop use
         elif clsEng.strPropType == "Monoprop":
-            mPropImpulseOx = 0
-            mPropImpulseFuel = 0
+            mPropImpulseOx = 0 # this is a monoprop engine, so no biprop use
+            mPropImpulseFuel = 0 # this is a monoprop engine, so no biprop use
             
-            mPropImpulseReserveOx = 0
-            mPropImpulseReserveFuel = 0          
+            mPropImpulseReserveOx = 0 # this is a monoprop engine, so no biprop use
+            mPropImpulseReserveFuel = 0 # this is a monoprop engine, so no biprop use         
             
-            mPropImpulseMono = mPropImpulse
+            mPropImpulseMono = mPropImpulse 
             mPropImpulseReserveMono = mPropImpulseReserve
         
         # Determine boiloff losses
-        mPropBoiloffOx = mdotOxBoiloff*dtPhase
-        mPropBoiloffFuel = mdotFuelBoiloff*dtPhase
-        mPropBoiloff   = mPropBoiloffOx + mPropBoiloffFuel
+        mPropBoiloffOx = mdotOxBoiloff*dtPhase # ox boiloff rate times phase duration
+        mPropBoiloffFuel = mdotFuelBoiloff*dtPhase # fuel boiloff rate times phase duration
+        mPropBoiloff   = mPropBoiloffOx + mPropBoiloffFuel # ox + fuel
         
         # Determine RCS losses
         mPropRCS = mdotRCS*dtPhase
@@ -100,17 +100,19 @@ class Phase:
             mChillOx = 5
             mChillFuel = 5
         else:
+            # not a chill phase, so no extra usage
             mChill=0
             mChillOx =0
             mChillFuel = 0
             
         if strPhaseType =="Settling":
-            mSettling = 5
+            mSettling = 5 # settling usage
         else:
-            mSettling=0
+            mSettling=0 #no settling usage
 
         
-        # Determine final mass      
+        # Determine final mass            
+        # subtract impulse, boiloff, rcs, chill, and settling
         mEnd = mStart - mPropImpulse - mPropBoiloff - mPropRCS - mChill - mSettling
         
         
@@ -153,8 +155,9 @@ class MissionSummary:
         """
         # Initialize variables 
         
-        pctResdiual = 0.01
+        pctResdiual = 0.01 # value from slides
         
+        # Initialize all values to zero
         mPropImpulse     = 0
         mPropImpulseOx   = 0
         mPropImpulseFuel = 0
@@ -199,9 +202,9 @@ class MissionSummary:
 
 
         # Stuff everything into self    
-        mPropConsumedOx   = mPropImpulseOx   + mPropBoiloffOx + mPropChillOx
-        mPropConsumedFuel = mPropImpulseFuel + mPropBoiloffFuel + mPropChillFuel
-        mPropConsumedMono = mPropImpulseMono + mPropRCS + mPropSettling
+        mPropConsumedOx   = mPropImpulseOx   + mPropBoiloffOx + mPropChillOx # Impulse, boiloff, and chill for oxygen
+        mPropConsumedFuel = mPropImpulseFuel + mPropBoiloffFuel + mPropChillFuel # Impulse, boiloff, and chill for fuel
+        mPropConsumedMono = mPropImpulseMono + mPropRCS + mPropSettling # Impulse, mPropRCS + mPropSettling
         mPropConsumedTotal = mPropConsumedOx + mPropConsumedFuel + mPropConsumedMono
 
         mPropResidualOx    = pctResdiual*(mPropConsumedOx+mPropImpulseReserveOx)
@@ -214,9 +217,9 @@ class MissionSummary:
         mPropAtLandingMono  = mPropResidualMono + mPropImpulseReserveMono
         mPropAtLandingTotal = mPropAtLandingOx + mPropAtLandingFuel + mPropAtLandingMono
 
-        mPropTotalOx = mPropConsumedOx + mPropAtLandingOx
-        mPropTotalFuel = mPropConsumedFuel + mPropAtLandingFuel
-        mPropTotalMono = mPropConsumedMono + mPropAtLandingMono
+        mPropTotalOx = mPropConsumedOx + mPropAtLandingOx # Consumed + left at landing
+        mPropTotalFuel = mPropConsumedFuel + mPropAtLandingFuel # Consumed + left at landing
+        mPropTotalMono = mPropConsumedMono + mPropAtLandingMono # Consumed + left at landing
         mPropTotalTotal = mPropTotalOx + mPropTotalFuel + mPropTotalMono
 
         dvPhase = np.zeros(len(tupPhases))

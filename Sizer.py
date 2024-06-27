@@ -1,13 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import Classes as cf
-import FunctionFile as ff
 import matplotlib.pyplot as plt
 
 
 # Run through sequence
-mSeparated  = np.linspace(3870, 8000, 6)# generate a linspace from 3870 to 8000 with four points
-thrSweep    = np.linspace(3000, 15000, 6)
+mSeparated  = np.linspace(3870, 8000, 6)
+thrSweep    = np.linspace(3000, 15000,6)
 mStart      = np.zeros((mSeparated.size, thrSweep.size))
 mFinal      = np.zeros((mSeparated.size, thrSweep.size))
 twPDIStart  = np.zeros((mSeparated.size, thrSweep.size))
@@ -26,14 +24,14 @@ for jj, thrust in enumerate(thrSweep):
         # Calculate the DV to raise the orbit. The equation is representative 
         # of launch performance
         apogeeOrbit= 7.7999e-10*mLaunch**4-2.1506e-5*mLaunch**3+2.2196e-1*mLaunch**2-1.0181e3*mLaunch+1.7624e6
-        dvReq   = ff.ApogeeRaise(apogeeOrbit) # you may need to rename this to match your function
+        dvReq   = cf.ApogeeRaise(apogeeOrbit)
         
         # Define the engine. Assume an Isp of 450 s
         engMain = cf.Engine(450, thrSweep[jj], 5.5, 'Biprop', 'Cryo')
-
+        
         engRCS  = cf.Engine(220, 448, 1, 'Monoprop', 'NotCryo')
 
-
+    
         if engMain.strCryo == 'Cryo':
             # Include chill-in and boiloff only for cryogenic sequence
             mdotOxBoiloff = 5/86400    # divide by seconds per day to get rate per second
@@ -140,9 +138,3 @@ plt.xlabel('Thrust/Weight Ratio at PDI Start')
 plt.ylabel('Payload (kg)')
 plt.legend(strLegend)
 plt.savefig('HW2_Payload_vs_TW.png', dpi=300)
-
-
-
-
-
-    
