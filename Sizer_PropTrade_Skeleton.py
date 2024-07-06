@@ -32,14 +32,16 @@ mdotRCS     = 3 / 86400     # divide by seconds per day to get rate per second
 
 
 # Rocket Information. Index to use and the cost of the rocket
-rocketIndex = 4 # Pick a number that corresponds to the rocket
-cstRocket   = 150000000 # Put in the cost of the rocket
-fairingDiameter = 7 # Put in the fairing diameter
+rocketIndex = 3 # Pick a number that corresponds to the rocket
+cstRocket   =  100_000_000 # Put in the cost of the rocket
+fairingDiameter = 5 # Put in the fairing diameter
 
 
 # Number of Prop Tanks and Radius
 nTanks = 1;
+print("Num Tanks: " + str(nTanks))
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
+print("\nMax Radius: " + str(rMax))
 
 for jj,ispEngine in enumerate(ispSweep):   
     # The fifth column of rocketData (index 3) contains the rocket of interest
@@ -47,8 +49,8 @@ for jj,ispEngine in enumerate(ispSweep):
     for ii,mLaunch in enumerate(mSeparated):
         
         # Interpolate the data from the datafile
-        apogeeOrbit = np.interp(mLaunch,rocketData[::-1,3],rocketData[::-1,0]) # the weird -1 reverses the order of the data since interp expects increasing values
-        
+        apogeeOrbit = np.interp(mLaunch,rocketData[::-1,rocketIndex],rocketData[::-1,0]) # the weird -1 reverses the order of the data since interp expects increasing values
+        #print(rocketData[::-1,rocketIndex])
                
         
         dvReq   = cf.ApogeeRaise(apogeeOrbit)
@@ -125,23 +127,25 @@ for jj,ispEngine in enumerate(ispSweep):
         Mission = cf.MissionSummary(Sequence)
         
         # Check tanks based on Isp (since each value is a different propellant)
+        matFuelTank = "Al-Li" # fuel tank material all the same
         if ispEngine==305:
-            OxTanks = cf.TankSet("NTO", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalOx)
-            FuelTanks = cf.TankSet("MMH", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalFuel)
+            OxTanks = cf.TankSet("NTO", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
+            FuelTanks = cf.TankSet("MMH", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)
         elif ispEngine==330:
-            OxTanks = cf.TankSet("Oxygen", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalOx)
-            FuelTanks = cf.TankSet("RP-1", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalFuel)   
+            OxTanks = cf.TankSet("Oxygen", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
+            FuelTanks = cf.TankSet("RP-1", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)   
         elif ispEngine==370:
-            OxTanks = cf.TankSet("Oxygen", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalOx)
-            FuelTanks = cf.TankSet("Methane", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalFuel)  
+            OxTanks = cf.TankSet("Oxygen", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
+            FuelTanks = cf.TankSet("Methane", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)  
         elif ispEngine==450:
-            OxTanks = cf.TankSet("Oxygen", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalOx)
-            FuelTanks = cf.TankSet("Hydrogen", "Al2219", nTanks, rMax, 300000, Mission.mPropTotalFuel)  
+            OxTanks = cf.TankSet("Oxygen", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
+            FuelTanks = cf.TankSet("Hydrogen", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)  
         
         # Calculate monopropellant tank size
-        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    
+        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono) # Forgetting monoprop tanks?   
         subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, 100, 'Deployable', 'Large', 8)
         
+        # print("\nTank MAss: " + str(OxTanks.mTotal + FuelTanks.mTotal)) 
         # Determine payload
         payload = mLaunch - Mission.mPropTotalTotal - subs.mTotalAllowable
         
@@ -159,7 +163,7 @@ for jj,ispEngine in enumerate(ispSweep):
 
 legString=('Goal', 'NTO/MMH', 'LOX/RP-1', 'LOX/Methane', 'LOX/LH2') # initialize the list for the legend
 fig1, ax1 = plt.subplots()
-ax1.plot([7500, 20000], [750, 750], color='k')
+ax1.plot([7500, 20000], [50, 50], color='k')
 for ii in range(ispSweep.size):                   
     ax1.plot(mStart[:,ii], mPayload[:,ii], linewidth=3.0)
    
