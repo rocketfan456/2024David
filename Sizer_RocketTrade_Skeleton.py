@@ -1,37 +1,53 @@
+# -*- coding: utf-8 -*-
+"""
+
+"""
 import numpy as np
-import Classes as cf
 import matplotlib.pyplot as plt
+import Classes as cf
+import pandas as pd
+
+##############################################
+# The actual running portion of the code
+#
+#
+##############################################     
 
 
 # Run through sequence
-mSeparated  = np.linspace(3870, 8000, 6)
-thrSweep    = np.linspace(3000, 15000,6)
-mStart      = np.zeros((mSeparated.size, thrSweep.size))
-mFinal      = np.zeros((mSeparated.size, thrSweep.size))
-twPDIStart  = np.zeros((mSeparated.size, thrSweep.size))
-dv          = np.zeros((mSeparated.size, thrSweep.size))
-twPhase     = np.zeros((mSeparated.size, thrSweep.size))
-payload     = np.zeros((mSeparated.size, thrSweep.size))
+rocketData  = np.genfromtxt("/Users/Dfmei/OneDrive/Documents/GitHub/2024David/RocketData.csv", delimiter=',', dtype='f8') # load in the data file
+nDataPointsMass = 100
+
+rockSweep   = np.arange(1, 5)
+mStart      = np.zeros((nDataPointsMass, rockSweep.size))
+mPayload    = np.zeros((nDataPointsMass, rockSweep.size))
+mDry        = np.zeros((nDataPointsMass, rockSweep.size))
+dv          = np.zeros((nDataPointsMass, rockSweep.size))
+twPhase     = np.zeros((nDataPointsMass, rockSweep.size))
+
 mdotRCS     = 3 / 86400     # divide by seconds per day to get rate per second
 
 
 
-# Loop over thrust:
-for jj, thrust in enumerate(thrSweep): 
-    # Loop over launch mass
+
+for jj,indRocket in enumerate(rockSweep):   
+    mSeparated  = np.linspace(rocketData[-1,indRocket], rocketData[0,indRocket], nDataPointsMass)
+
     for ii,mLaunch in enumerate(mSeparated):
-
-        # Calculate the DV to raise the orbit. The equation is representative 
-        # of launch performance
-        apogeeOrbit= 7.7999e-10*mLaunch**4-2.1506e-5*mLaunch**3+2.2196e-1*mLaunch**2-1.0181e3*mLaunch+1.7624e6
-        dvReq   = cf.ApogeeRaise(apogeeOrbit)
         
-        # Define the engine. Assume an Isp of 450 s
-        engMain = cf.Engine(450, thrSweep[jj], 5.5, 'Biprop', 'Cryo')
+        apogeeOrbit = np.interp(mLaunch,rocketData[::-1,indRocket],rocketData[::-1,0]) # the weird -1 reverses the order of the data since interp expects increasing values
         
+        
+        
+        # engMain = cf.Engine(450, 25000, 5.5, 'Biprop', 'Cryo') # Fill in values from hydrogen
+        # engMain = cf.Engine(370, 25000, 2.8, 'Biprop', 'Cryo') # Fill in values from Methane
+        # engMain = cf.Engine(305, 25000, 1.8, 'Biprop', 'NotCryo') # fill in vlues with NTO/MMH
+        engMain = cf.Engine(330, 25000, 2.3, 'Biprop', 'NotCryo') # Fill in values with RP-1
         engRCS  = cf.Engine(220, 448, 1, 'Monoprop', 'NotCryo')
-
-    
+        
+        dvReq = cf.ApogeeRaise(apogeeOrbit);
+        
+        
         if engMain.strCryo == 'Cryo':
             # Include chill-in and boiloff only for cryogenic sequence
             mdotOxBoiloff = 5/86400    # divide by seconds per day to get rate per second
@@ -41,14 +57,11 @@ for jj, thrust in enumerate(thrSweep):
             PreTLIChill = cf.Phase('Pre-TCM1 Chill',   PreTLISett.mEnd,       0, engMain, 'Chill',        0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             TLI         = cf.Phase('TLI',             PreTLIChill.mEnd,   dvReq, engMain,  'Burn',        0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             CoastToTCM1 = cf.Phase('Coast to TCM1',           TLI.mEnd,       0, engMain, 'Coast', 1*86400, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
-            # Replace the PHASE_TYPE below with the appropriate string
-            PreTCM1Sett = cf.Phase('Pre-TCM1 Settling',CoastToTCM1.mEnd,      0, engMain, 'Settling',      0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
+            PreTCM1Sett = cf.Phase('Pre-TCM1 Settling',CoastToTCM1.mEnd,      0, engMain,'Settling',      0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             PreTCM1Chill= cf.Phase('Pre-TCM1 Chill',  PreTCM1Sett.mEnd,       0, engMain, 'Chill',       0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             TCM1        = cf.Phase('TCM1',           PreTCM1Chill.mEnd,      20, engMain,  'Burn',        0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
-            # Replace the TIME_HERE below with 2 days (i.e. 2*86400)
-            CoastToTCM2 = cf.Phase('Coast to TCM2',          TCM1.mEnd,       0, engMain, 'Coast', 2*86400, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff) 
+            CoastToTCM2 = cf.Phase('Coast to TCM2',          TCM1.mEnd,       0, engMain, 'Coast', 2*86400, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             TCM2        = cf.Phase('TCM2',            CoastToTCM2.mEnd,       5,  engRCS,  'Burn',       0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff) 
-            # Replace the TIME_HERE below wit 1 day (i.e. 1*86400)
             CoastToTCM3 = cf.Phase('Coast to TCM3',          TCM2.mEnd,       0, engMain, 'Coast', 1*86400, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             TCM3        = cf.Phase('TCM3',            CoastToTCM3.mEnd,       5,  engRCS,  'Burn',        0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             CoastToLOI  = cf.Phase('Coast to LOI',           TCM3.mEnd,       0, engMain, 'Coast', 0.5*86400, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
@@ -65,11 +78,11 @@ for jj, thrust in enumerate(thrSweep):
             PrePDISett  = cf.Phase('Pre-PDI Settling', CoastToPDI.mEnd,       0, engMain,'Settling',      0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
             PrePDIChill = cf.Phase('Pre-PDI Chill',    PrePDISett.mEnd,       0, engMain, 'Chill',       0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff) 
             PDI         = cf.Phase('PDI',             PrePDIChill.mEnd,      -1, engMain,  'Burn',       0, mdotRCS, mdotOxBoiloff, mdotFuelBoiloff)
-            
+        
             Sequence = [PreTLISett, PreTLIChill, TLI, CoastToTCM1, PreTCM1Sett, PreTCM1Chill, TCM1,CoastToTCM2, TCM2, CoastToTCM3, \
             TCM3,CoastToLOI,PreLOISett, PreLOIChill, LOI, CoastToTCM4, TCM4,CoastToDOI, PreDOISett, PreDOIChill, DOI, CoastToPDI, \
                 PrePDISett, PrePDIChill, PDI]
-       
+        
         else:
             # This is not a cryogenic engine, so we don't need chill-in or boiloff
             mdotOxBoiloff   = 0    # divide by seconds per day to get rate per second
@@ -99,42 +112,47 @@ for jj, thrust in enumerate(thrSweep):
             Sequence = [PreTLISett, TLI, CoastToTCM1, PreTCM1Sett, TCM1,CoastToTCM2, TCM2, CoastToTCM3, \
             TCM3,CoastToLOI,PreLOISett,LOI,CoastToTCM4, TCM4,CoastToDOI, PreDOISett, DOI, CoastToPDI, \
                 PrePDISett, PDI]
-    
+        
         # Create the Misison Summary and calculate subsystem masses with payload    
         Mission = cf.MissionSummary(Sequence)
-        OxTanks = cf.TankSet("Oxygen", "Al2219", 2, 1, 300000, Mission.mPropTotalOx)
-        FuelTanks = cf.TankSet("Hydrogen", "Al2219", 2, 2, 300000, Mission.mPropTotalFuel)    
-        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    
-        subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, 100, 'Deployable', 'Large', 8)
-        twPDIStart[ii,jj]=thrust/(DOI.mEnd*9.81) # we're saving this use it to plot later
+        OxTanks = cf.TankSet("Oxygen", "Stainless", 1, 1.5, 300000, Mission.mPropTotalOx) #Ox for now
 
-        payload[ii,jj] = mLaunch - Mission.mPropTotalTotal - subs.mTotalAllowable
-   
+        FuelTanks = cf.TankSet("RP-1", "Stainless", 1, 2.05, 300000, Mission.mPropTotalFuel)    # Fill in RP-1 here
+        # FuelTanks = cf.TankSet("Methane", "Stainless", 1, 2.05, 300000, Mission.mPropTotalFuel)     # Fill in Methane here
+        MonoTanks = cf.TankSet("MMH", "Al2219", 1,1.08, 300000, Mission.mPropTotalMono)    
+        subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, 2000, 'Deployable', 'Large', 8)
+        payload = mLaunch - Mission.mPropTotalTotal - subs.mTotalAllowable
+        
+        print([OxTanks.lRadiusTank, mLaunch, dvReq])
+        
+        mStart[ii, jj] = mLaunch
+        mPayload[ii, jj] = payload
+        mDry[ii,jj] = subs.mTotalAllowable
 
-
-
-# Start the plotting stuff 
+legString=('Goal', 'Scout', 'Juno', 'Vanguard', 'Nike') # initialize the list for the legend, add in the rocket names
 fig1 = plt.figure()
-strLegend=list()
-for ii in range(thrSweep.size):                   
-    plt.plot(mSeparated, payload[:,ii], linewidth=3.0)
-    strLegend.append('Thrust={0:6.0f} N'.format(thrSweep[ii]))
+plt.plot([2000, 20000], [50, 50], color='k')
+for ii in range(rockSweep.size):                   
+    plt.plot(mStart[:,ii], mPayload[:,ii], linewidth=3.0)
    
 plt.grid()
 plt.xlabel('Start Mass (kg)')
 plt.ylabel('Payload (kg)')
-plt.legend(strLegend)
-plt.savefig('HW2_Payload_vs_Mass.png', dpi=300)
+plt.legend((legString))
 
 
-fig1 = plt.figure()
-# Build up the legend string
-strLegend=list()
-for ii in range(mSeparated.size):                   
-    plt.plot(twPDIStart[ii,:], payload[ii,:], linewidth=3.0)
-    strLegend.append('Start Mass={0:5.0f} kg'.format(mSeparated[ii]))
+"""      
+
+for jj, thrust in enumerate(rockSweep):
+    print('{:9.1f} {:9.1f}{:9.1f}{:9.3f}'.format(rockSweep[jj], mFinal[0,jj], dv[0,jj], twPhase[0,jj]))
+# Start the plotting stuff 
+
+
 plt.grid()
-plt.xlabel('Thrust/Weight Ratio at PDI Start')
-plt.ylabel('Payload (kg)')
-plt.legend(strLegend)
-plt.savefig('HW2_Payload_vs_TW.png', dpi=300)
+
+fig2 = plt.figure()
+plt.plot(mSeparated, mFinal[:,0])
+plt.xlabel('Launch Mass (kg)')
+plt.ylabel('Final Mass (kg)')
+plt.grid()
+"""
