@@ -14,30 +14,37 @@ import Classes as cf
 
 
 # Run through sequence
-rocketData  = np.genfromtxt('/Users/jlampariello/Downloads/RocketData.csv', delimiter=',', dtype='f8')
+rocketData  = np.genfromtxt('/Users/Dfmei/OneDrive/Documents/Github/2024David/RocketData.csv', delimiter=',', dtype='f8')
 nDataPointsMass = 100
 
 
-# Replace the values below with the data from your chosen engine
-ispEngine    = 450
-mrEngine    = np.array([5.5])
-thrEngine   = 20000
+# Replace the values below with the data from your chosen engine (Leprechaun)
+ispEngine    = 330
+mrEngine    = np.array([2.3])
+thrEngine   = 22240
 flgPressure     = np.array([1])   # 10 if the engine is pressure fed, 1 if the engine is pump fed
 strOxEngine = "Oxygen"
-strFuelEngine = "Hydrogen"
-strEngType  = "Cryo"
+strFuelEngine = "RP-1"
+strEngType  = "NotCryo"
 flgNew      = np.array([1]) # 0 if the engine exists, 1 if it doesn't
 
 
 # Tank material options
 strTankMat = ["Al2219", "Stainless", "Al-Li"]
 
-
+rocket_name = "Vanguard"
 # Rocket Information. Index to use and the cost of the rocket
-rocketIndex = 3
-cstRocket   = 150000000
-fairingDiameter = 7
+# Nike:
+if rocket_name == "Nike":
+    rocketIndex = 4
+    cstRocket   = 150000000
+    fairingDiameter = 7
 
+# Vanguard:
+elif rocket_name == "Vanguard":
+    rocketIndex = 3
+    cstRocket = 100_000_000
+    fairingDiameter = 5
 
 # Number of Prop Tanks and Radius
 nTanks = 1;

@@ -38,7 +38,7 @@ fairingDiameter = 5 # Put in the fairing diameter
 
 
 # Number of Prop Tanks and Radius
-nTanks = 1;
+nTanks = 2;
 print("Num Tanks: " + str(nTanks))
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
 print("\nMax Radius: " + str(rMax))
@@ -54,7 +54,7 @@ for jj,ispEngine in enumerate(ispSweep):
                
         
         dvReq   = cf.ApogeeRaise(apogeeOrbit)
-        engMain = cf.Engine(ispEngine, 25000, mrSweep[jj], 'Biprop', cryoFlag[jj])
+        engMain = cf.Engine(ispEngine, 2224, mrSweep[jj], 'Biprop', cryoFlag[jj])
         engRCS  = cf.Engine(220, 448, 1, 'Monoprop', 'NotCryo')
         
         
@@ -129,8 +129,8 @@ for jj,ispEngine in enumerate(ispSweep):
         # Check tanks based on Isp (since each value is a different propellant)
         matFuelTank = "Al-Li" # fuel tank material all the same
         if ispEngine==305:
-            OxTanks = cf.TankSet("NTO", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
-            FuelTanks = cf.TankSet("MMH", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)
+            OxTanks = cf.TankSet("NTO", matFuelTank, nTanks, rMax, 1000000, Mission.mPropTotalOx)
+            FuelTanks = cf.TankSet("MMH", matFuelTank, nTanks, rMax, 1000000, Mission.mPropTotalFuel)
         elif ispEngine==330:
             OxTanks = cf.TankSet("Oxygen", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalOx)
             FuelTanks = cf.TankSet("RP-1", matFuelTank, nTanks, rMax, 300000, Mission.mPropTotalFuel)   
