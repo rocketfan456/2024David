@@ -4,7 +4,7 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
-import Classes_HW6 as cf
+import Classes as cf
 
 ##############################################
 # The actual running portion of the code
@@ -14,35 +14,42 @@ import Classes_HW6 as cf
 
 # 
 # Run through sequence
-rocketData  = np.genfromtxt('/Users/jlampariello/Downloads/RocketData.csv', delimiter=',', dtype='f8')
+rocketData  = np.genfromtxt('/Users/Dfmei/OneDrive/Documents/Github/2024David/RocketData.csv', delimiter=',', dtype='f8')
 nDataPointsMass = 20
 
 
 # Replace the values below with the data from your chosen engine
-ispEngine    = 370
-mrEngine    = np.array([3.8])
-thrEngine   = 11857
+ispEngine    = 330
+mrEngine    = np.array([2.3])
+thrEngine   = 22240
 flgPressure     = np.array([1])   # 10 if the engine is pressure fed, 1 if the engine is pump fed
 strOxEngine = "Oxygen"
-strFuelEngine = "Methane"
-strEngType  = "Cryo"
-flgNew      = np.array([1]) # 0 if the engine exists, 1 if it doesn't
+strFuelEngine = "RP-1"
+strEngType  = "NotCryo"
+flgNew      = np.array([0]) # 0 if the engine exists, 1 if it doesn't
 
 
 # Tank material options
 strTankMat = "Al2219"
 
 # Rocket Information. Index to use and the cost of the rocket
-rocketIndex = 3
-cstRocket   = 150000000
-fairingDiameter = 7
+rocket_type = "Vanguard"
+
+if rocket_type == "Nike":
+    rocketIndex = 4
+    cstRocket   = 150000000
+    fairingDiameter = 7
+elif rocket_type == "Vanguard":
+    rocketIndex = 3
+    cstRocket = 100_000_000
+    fairingDiameter = 5
 
 # Number of Prop Tanks and Radius
 nTanks = np.array([1,2,3]);
 
 # Target Payload
-landerSize  = "Large"
-goalPayload = 750
+landerSize  = "Small"
+goalPayload = 50
 goalPower   = 100
 
 

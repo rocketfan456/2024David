@@ -26,7 +26,7 @@ flgPressure     = np.array([1])   # 10 if the engine is pressure fed, 1 if the e
 strOxEngine = "Oxygen"
 strFuelEngine = "RP-1"
 strEngType  = "NotCryo"
-flgNew      = np.array([1]) # 0 if the engine exists, 1 if it doesn't
+flgNew      = np.array([0]) # 0 if the engine exists, 1 if it doesn't
 
 
 # Tank material options
@@ -47,7 +47,7 @@ elif rocket_name == "Vanguard":
     fairingDiameter = 5
 
 # Number of Prop Tanks and Radius
-nTanks = 1;
+nTanks = 2;
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
 
 
