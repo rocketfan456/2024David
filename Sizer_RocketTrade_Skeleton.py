@@ -40,9 +40,9 @@ for jj,indRocket in enumerate(rockSweep):
         
         
         # engMain = cf.Engine(450, 25000, 5.5, 'Biprop', 'Cryo') # Fill in values from hydrogen
-        # engMain = cf.Engine(370, 25000, 2.8, 'Biprop', 'Cryo') # Fill in values from Methane
+        engMain = cf.Engine(370, 25000, 2.8, 'Biprop', 'Cryo') # Fill in values from Methane
         # engMain = cf.Engine(305, 25000, 1.8, 'Biprop', 'NotCryo') # fill in vlues with NTO/MMH
-        engMain = cf.Engine(330, 25000, 2.3, 'Biprop', 'NotCryo') # Fill in values with RP-1
+        # engMain = cf.Engine(330, 22240, 2.3, 'Biprop', 'NotCryo') # Fill in values with RP-1
         engRCS  = cf.Engine(220, 448, 1, 'Monoprop', 'NotCryo')
         
         dvReq = cf.ApogeeRaise(apogeeOrbit);
@@ -115,10 +115,10 @@ for jj,indRocket in enumerate(rockSweep):
         
         # Create the Misison Summary and calculate subsystem masses with payload    
         Mission = cf.MissionSummary(Sequence)
-        OxTanks = cf.TankSet("Oxygen", "Stainless", 1, 1.5, 300000, Mission.mPropTotalOx) #Ox for now
+        OxTanks = cf.TankSet("Oxygen", "Stainless", 1, 2, 300000, Mission.mPropTotalOx) #Ox for now
 
-        FuelTanks = cf.TankSet("RP-1", "Stainless", 1, 2.05, 300000, Mission.mPropTotalFuel)    # Fill in RP-1 here
-        # FuelTanks = cf.TankSet("Methane", "Stainless", 1, 2.05, 300000, Mission.mPropTotalFuel)     # Fill in Methane here
+        # FuelTanks = cf.TankSet("RP-1", "Stainless", 1, 2.05, 300000, Mission.mPropTotalFuel)    # Fill in RP-1 here
+        FuelTanks = cf.TankSet("Methane", "Stainless", 1, 2.0, 300000, Mission.mPropTotalFuel)     # Fill in Methane here
         MonoTanks = cf.TankSet("MMH", "Al2219", 1,1.08, 300000, Mission.mPropTotalMono)    
         subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, 2000, 'Deployable', 'Large', 8)
         payload = mLaunch - Mission.mPropTotalTotal - subs.mTotalAllowable

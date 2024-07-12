@@ -12,13 +12,13 @@ import Classes as cf
 #
 ##############################################     
 
-# 
+
 # Run through sequence
 rocketData  = np.genfromtxt('/Users/Dfmei/OneDrive/Documents/Github/2024David/RocketData.csv', delimiter=',', dtype='f8')
-nDataPointsMass = 20
+nDataPointsMass = 100
 
 
-# Replace the values below with the data from your chosen engine
+# Replace the values below with the data from your chosen engine (Leprechaun)
 ispEngine    = 330
 mrEngine    = np.array([2.3])
 thrEngine   = 22240
@@ -30,22 +30,33 @@ flgNew      = np.array([0]) # 0 if the engine exists, 1 if it doesn't
 
 
 # Tank material options
-strTankMat = "Al-Li"
+# strTankMat = ["Al2219", "Stainless", "Al-Li"]
 
+# For arrays:
+strTankMat = "Stainless"
+strMat = strTankMat
+
+# solar Array type
+arrayType = ["Deployable", "Body"]
+
+rocket_name = "Vanguard"
 # Rocket Information. Index to use and the cost of the rocket
-rocket_type = "Vanguard"
-
-if rocket_type == "Nike":
+# Nike:
+if rocket_name == "Nike":
     rocketIndex = 4
     cstRocket   = 150000000
     fairingDiameter = 7
-elif rocket_type == "Vanguard":
+
+# Vanguard:
+elif rocket_name == "Vanguard":
     rocketIndex = 3
     cstRocket = 100_000_000
     fairingDiameter = 5
 
 # Number of Prop Tanks and Radius
-nTanks = np.array([1,2,3]);
+nTanks = 1;
+rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
+
 
 # Target Payload
 landerSize  = "Small"
@@ -53,21 +64,21 @@ goalPayload = 50
 goalPower   = 100
 
 
-mStart      = np.zeros((nDataPointsMass, nTanks.size))
-mPayload    = np.zeros((nDataPointsMass, nTanks.size))
-mDry        = np.zeros((nDataPointsMass, nTanks.size))
-dv          = np.zeros((nDataPointsMass, nTanks.size))
-twPhase     = np.zeros((nDataPointsMass, nTanks.size))
-cost     = np.zeros((nDataPointsMass, nTanks.size))
+
+mStart      = np.zeros((nDataPointsMass, len(strTankMat)))
+mPayload    = np.zeros((nDataPointsMass, len(strTankMat)))
+mDry        = np.zeros((nDataPointsMass, len(strTankMat)))
+dv          = np.zeros((nDataPointsMass, len(strTankMat)))
+twPhase     = np.zeros((nDataPointsMass, len(strTankMat)))
+cost     = np.zeros((nDataPointsMass, len(strTankMat)))
 
 
 mdotRCS     = 3 / 86400     # divide by seconds per day to get rate per second
 
 
-for jj,numTanks in enumerate(nTanks):   
-    rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/numTanks/2
-    print(numTanks, "tank(s)    Maximum Diameter: ", 2*rMax)
 
+for jj, array in enumerate(arrayType):
+# for jj,strMat in enumerate(strTankMat):   
     # The fifth column of rocketData (index 4) contains the rocket of interest
     mSeparated  = np.linspace(rocketData[-1,rocketIndex], rocketData[0,rocketIndex], nDataPointsMass)
     for ii,mLaunch in enumerate(mSeparated):
@@ -154,14 +165,15 @@ for jj,numTanks in enumerate(nTanks):
         
         # Check tanks based on Isp (since each value is a different propellant
 
-        OxTanks = cf.TankSet(strOxEngine, strTankMat, numTanks, rMax, 300000*flgPressure, Mission.mPropTotalOx)
-        FuelTanks = cf.TankSet(strFuelEngine, strTankMat, numTanks, rMax, 300000*flgPressure, Mission.mPropTotalFuel)
+        OxTanks = cf.TankSet(strOxEngine, strMat, nTanks, rMax, 300000*flgPressure, Mission.mPropTotalOx)
+        FuelTanks = cf.TankSet(strFuelEngine, strMat, nTanks, rMax, 300000*flgPressure, Mission.mPropTotalFuel)
 
         
         # Calculate monopropellant tank size
         MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    
         
-        subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, goalPower, 'Deployable', landerSize, 8)
+        # subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, goalPower, 'Deployable', landerSize, 8)
+        subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, goalPower, array, landerSize, 8) 
         
         # Determine payload
         payload = mLaunch - Mission.mPropTotalTotal - subs.mTotalAllowable
@@ -182,8 +194,10 @@ for jj,numTanks in enumerate(nTanks):
 legString = ["goalPayload"]
 fig1, ax1 = plt.subplots()
 ax1.plot([7500, 20000], [goalPayload, goalPayload], color='k')
-for ii in range(nTanks.size):  
-    legString.append(nTanks[ii])                 
+# for ii in range(len(strTankMat)):  
+    # legString.append(strTankMat[ii])                 
+for ii in range(len(arrayType)):
+    legString.append(arrayType[ii])
     ax1.plot(mStart[:,ii], mPayload[:,ii], linewidth=3.0)
 plt.legend((legString))
 
@@ -194,14 +208,13 @@ plt.ylabel('Payload (kg)')
 
 legString = []
 fig2, ax2 = plt.subplots()
-for ii in range(nTanks.size):  
-    legString.append(nTanks[ii])                 
+# for ii in range(len(strTankMat)):  
+    # legString.append(strTankMat[ii])                 
+for ii in range(len(arrayType)):
+    legString.append(arrayType[ii])
     ax2.plot(mStart[:,ii], cost[:,ii]/1000000, linewidth=3.0)
    
 plt.grid()
 plt.xlabel('Start Mass (kg)')
 plt.ylabel('Cost (Millions of Monopoly Dollars)')
 plt.legend((legString))
-
-
-

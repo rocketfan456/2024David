@@ -32,9 +32,9 @@ mdotRCS     = 3 / 86400     # divide by seconds per day to get rate per second
 
 
 # Rocket Information. Index to use and the cost of the rocket
-rocketIndex = 3 # Pick a number that corresponds to the rocket
-cstRocket   =  100_000_000 # Put in the cost of the rocket
-fairingDiameter = 5 # Put in the fairing diameter
+rocketIndex = 4 # Pick a number that corresponds to the rocket
+cstRocket   =  150_000_000 # Put in the cost of the rocket
+fairingDiameter = 7 # Put in the fairing diameter
 
 
 # Number of Prop Tanks and Radius
@@ -54,7 +54,7 @@ for jj,ispEngine in enumerate(ispSweep):
                
         
         dvReq   = cf.ApogeeRaise(apogeeOrbit)
-        engMain = cf.Engine(ispEngine, 2224, mrSweep[jj], 'Biprop', cryoFlag[jj])
+        engMain = cf.Engine(ispEngine, 22240, mrSweep[jj], 'Biprop', cryoFlag[jj])
         engRCS  = cf.Engine(220, 448, 1, 'Monoprop', 'NotCryo')
         
         

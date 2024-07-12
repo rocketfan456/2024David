@@ -47,7 +47,7 @@ elif rocket_name == "Vanguard":
     fairingDiameter = 5
 
 # Number of Prop Tanks and Radius
-nTanks = 2;
+nTanks = 1;
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
 
 
