@@ -4,7 +4,7 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
-import Classes_HW6 as cf
+import Classes_FINAL as cf
 
 ##############################################
 # The actual running portion of the code
@@ -14,29 +14,29 @@ import Classes_HW6 as cf
 
 
 # Run through sequence
-rocketData  = np.genfromtxt('/Users/jlampariello/Downloads/RocketData.csv', delimiter=',', dtype='f8')
+rocketData  = np.genfromtxt('/Users/Dfmei/OneDrive/Documents/Github/2024David/RocketData.csv', delimiter=',', dtype='f8')
 nDataPointsMass = 1
 # Pick your desired launch mass
-mLaunched = [12000]
+mLaunched = [7205]
 
 
 # Replace the values below with the data from the slides
-ispSweep    = np.array([470])
+ispSweep    = np.array([330])
 thrEngine   = np.array([22240])
-mrEngine    = np.array([5.5])
+mrEngine    = np.array([2.3])
 flgPressure     = np.array([1])   # 10 if the engine is pressure fed, 1 if the engine is pump fed
 strOxEngine = ["Oxygen"]
-strFuelEngine = ["Hydrogen"]
-strEngType  = ["Cryo"]
+strFuelEngine = ["RP-1"]
+strEngType  = ["NotCryo"]
 flgNew      = np.array([0]) # 0 if the engine exists, 1 if it doesn't
-strEngName  = ["ND-1"]  # used for legend
+strEngName  = ["Leprechaun"]  # used for legend
 
 
 
 # Rocket Information. Index to use and the cost of the rocket
-rocketIndex = 4
-cstRocket   = 150000000
-fairingDiameter = 7
+rocketIndex = 3
+cstRocket   = 100_000_000
+fairingDiameter = 5
 
 
 # Number of Prop Tanks and Radius
@@ -44,12 +44,12 @@ nTanks = 1;
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
 
 # Target Payload
-landerSize  = "Large"
-goalPayload = 750
-goalPower   = 1500
+landerSize  = "Small"
+goalPayload = 50
+goalPower   = 100 # double-check!
 
 
-strTankMat = "Al2219"
+strTankMat = "Stainless"
 
 
 mStart      = np.zeros((nDataPointsMass, ispSweep.size))
@@ -66,7 +66,7 @@ mdotRCS     = 3 / 86400     # divide by seconds per day to get rate per second
 
 
 for jj,ispEngine in enumerate(ispSweep):   
-    # The fifth column of rocketData (index 4) contains the rocket of interest
+    # The fourth column of rocketData (index 3) contains the rocket of interest
     mSeparated = mLaunched  
     for ii,mLaunch in enumerate(mSeparated):
         
@@ -156,7 +156,7 @@ for jj,ispEngine in enumerate(ispSweep):
 
         
         # Calculate monopropellant tank size
-        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    
+        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    # Can we change MonoTanks tank material/other parameters of MonoTanks
         
         subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, goalPower, 'Deployable', landerSize, 8)
         
