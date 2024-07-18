@@ -30,7 +30,7 @@ flgNew      = np.array([0]) # 0 if the engine exists, 1 if it doesn't
 
 
 # Tank material options
-strTankMat = "Al2219"
+strTankMat = "Al-Li"
 
 # Rocket Information. Index to use and the cost of the rocket
 rocket_type = "Vanguard"
@@ -200,7 +200,7 @@ for ii in range(nTanks.size):
    
 plt.grid()
 plt.xlabel('Start Mass (kg)')
-plt.ylabel('Cost (Millions of Monopoly Dollars)')
+plt.ylabel('Cost (Millions of Dollars)')
 plt.legend((legString))
 
 

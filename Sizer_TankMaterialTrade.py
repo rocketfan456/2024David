@@ -204,7 +204,7 @@ for ii in range(len(strTankMat)):
    
 plt.grid()
 plt.xlabel('Start Mass (kg)')
-plt.ylabel('Cost (Millions of Monopoly Dollars)')
+plt.ylabel('Cost (Millions of Dollars)')
 plt.legend((legString))
 
 

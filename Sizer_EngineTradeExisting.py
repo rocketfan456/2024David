@@ -147,8 +147,8 @@ for jj,ispEngine in enumerate(ispSweep):
         
         # Check tanks based on Isp (since each value is a different propellant
 
-        OxTanks = cf.TankSet(strOxEngine[jj], "Al2219", nTanks, rMax, 300000*flgPressure[jj], Mission.mPropTotalOx)
-        FuelTanks = cf.TankSet(strFuelEngine[jj], "Al2219", nTanks, rMax, 300000*flgPressure[jj], Mission.mPropTotalFuel)
+        OxTanks = cf.TankSet(strOxEngine[jj], "Stainless", nTanks, rMax, 300000*flgPressure[jj], Mission.mPropTotalOx)
+        FuelTanks = cf.TankSet(strFuelEngine[jj], "Stainless", nTanks, rMax, 300000*flgPressure[jj], Mission.mPropTotalFuel)
 
         
         # Calculate monopropellant tank size
@@ -191,7 +191,7 @@ for ii in range(ispSweep.size):
    
 plt.grid()
 plt.xlabel('Start Mass (kg)')
-plt.ylabel('Cost (Millions of Monopoly Dollars)')
+plt.ylabel('Cost (Millions of Dollars)')
 plt.legend((legString))
 
 
