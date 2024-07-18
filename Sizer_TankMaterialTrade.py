@@ -182,6 +182,7 @@ for jj,strMat in enumerate(strTankMat):
         
         
 
+fontsize = 13   
 
 legString = ["goalPayload"]
 fig1, ax1 = plt.subplots()
@@ -189,12 +190,13 @@ ax1.plot([7500, 20000], [goalPayload, goalPayload], color='k')
 for ii in range(len(strTankMat)):  
     legString.append(strTankMat[ii])                 
     ax1.plot(mStart[:,ii], mPayload[:,ii], linewidth=3.0)
-plt.legend((legString))
-
-    
+plt.legend((legString), fontsize=fontsize)
+ 
 plt.grid()
-plt.xlabel('Start Mass (kg)')
-plt.ylabel('Payload (kg)')
+plt.xlabel('Start Mass (kg)', fontsize=fontsize)
+plt.xticks(fontsize=fontsize)
+plt.ylabel('Payload (kg)', fontsize=fontsize)
+plt.yticks(fontsize=fontsize)
 
 legString = []
 fig2, ax2 = plt.subplots()
@@ -203,9 +205,11 @@ for ii in range(len(strTankMat)):
     ax2.plot(mStart[:,ii], cost[:,ii]/1000000, linewidth=3.0)
    
 plt.grid()
-plt.xlabel('Start Mass (kg)')
-plt.ylabel('Cost (Millions of Dollars)')
-plt.legend((legString))
+plt.xlabel('Start Mass (kg)', fontsize=fontsize)
+plt.xticks(fontsize=fontsize- 2)
+plt.ylabel('Cost (Millions of Dollars)', fontsize=fontsize )
+plt.yticks(fontsize=fontsize)
+plt.legend((legString), fontsize=fontsize)
 
 
 
