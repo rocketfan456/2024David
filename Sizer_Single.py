@@ -166,6 +166,8 @@ for jj,ispEngine in enumerate(ispSweep):
         # Determine Cost
         costObject = cf.Cost(subs.mTotalAllowable,  thrEngine[jj]*flgNew[jj], cstRocket)
         cost[ii,jj] = costObject.costNRETotal
+        totalCost = "{0:9.2f}".format(cost[ii,jj])
+        print(f"Total Cost: ${totalCost}")
         
         # Save values for plotting        
         mStart[ii, jj] = mLaunch

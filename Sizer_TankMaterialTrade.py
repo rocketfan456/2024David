@@ -163,7 +163,7 @@ for jj,strMat in enumerate(strTankMat):
 
         
         # Calculate monopropellant tank size
-        MonoTanks = cf.TankSet("MMH", strMat, 1, 2, 300000, Mission.mPropTotalMono)    
+        MonoTanks = cf.TankSet("MMH", "Al2219", 1, 2, 300000, Mission.mPropTotalMono)    
         
         subs = cf.Subsystems(mLaunch, engMain, OxTanks, FuelTanks, MonoTanks, goalPower, 'Deployable', landerSize, 8)
         
