@@ -42,6 +42,7 @@ fairingDiameter = 5
 # Number of Prop Tanks and Radius
 nTanks = 1;
 rMax = (fairingDiameter-0.2-0.024-0.15-0.3)/nTanks/2
+print("Tank Diameter: ", rMax*2, "m\n")
 
 # Target Payload
 landerSize  = "Small"
